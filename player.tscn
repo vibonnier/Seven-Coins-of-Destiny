@@ -1,0 +1,457 @@
+[gd_scene load_steps=32 format=2]
+
+[ext_resource path="res://player.gd" type="Script" id=1]
+[ext_resource path="res://player.png" type="Texture" id=2]
+[ext_resource path="res://addons/StateGraph/StateMachine/State.gd" type="Script" id=3]
+[ext_resource path="res://addons/StateGraph/StateMachine/StateAnimationHandler/StateAnimationHandler.gd" type="Script" id=4]
+[ext_resource path="res://addons/StateGraph/StateMachine/StateMachine.gd" type="Script" id=5]
+[ext_resource path="res://sound/dash.wav" type="AudioStream" id=6]
+[ext_resource path="res://sound/doublejump2.wav" type="AudioStream" id=7]
+[ext_resource path="res://sound/dash2.wav" type="AudioStream" id=8]
+[ext_resource path="res://sound/dash3.wav" type="AudioStream" id=9]
+[ext_resource path="res://sound/jump3.wav" type="AudioStream" id=10]
+[ext_resource path="res://sound/doublejump1.wav" type="AudioStream" id=11]
+[ext_resource path="res://sound/jump1.wav" type="AudioStream" id=12]
+[ext_resource path="res://sound/jump2.wav" type="AudioStream" id=13]
+[ext_resource path="res://sound/crash2.wav" type="AudioStream" id=14]
+[ext_resource path="res://sound/crash.wav" type="AudioStream" id=15]
+[ext_resource path="res://sound/coin.wav" type="AudioStream" id=16]
+
+[sub_resource type="AtlasTexture" id=1]
+atlas = ExtResource( 2 )
+region = Rect2( 384, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=2]
+atlas = ExtResource( 2 )
+region = Rect2( 128, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 2 )
+region = Rect2( 192, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 2 )
+region = Rect2( 768, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=4]
+atlas = ExtResource( 2 )
+region = Rect2( 0, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 2 )
+region = Rect2( 640, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 2 )
+region = Rect2( 576, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=7]
+atlas = ExtResource( 2 )
+region = Rect2( 512, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=8]
+atlas = ExtResource( 2 )
+region = Rect2( 704, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=9]
+atlas = ExtResource( 2 )
+region = Rect2( 256, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=10]
+atlas = ExtResource( 2 )
+region = Rect2( 320, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 2 )
+region = Rect2( 448, 0, 64, 64 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 2 )
+region = Rect2( 64, 0, 64, 64 )
+
+[sub_resource type="SpriteFrames" id=13]
+animations = [ {
+"frames": [ SubResource( 1 ) ],
+"loop": false,
+"name": "dash",
+"speed": 1.0
+}, {
+"frames": [ SubResource( 2 ) ],
+"loop": true,
+"name": "double saut",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ) ],
+"loop": true,
+"name": "immobile nager",
+"speed": 1.5
+}, {
+"frames": [ SubResource( 4 ) ],
+"loop": true,
+"name": "immobile terre",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 5 ), SubResource( 6 ), SubResource( 7 ), SubResource( 8 ) ],
+"loop": true,
+"name": "marcher",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 9 ), SubResource( 10 ) ],
+"loop": true,
+"name": "nager",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 11 ) ],
+"loop": true,
+"name": "parachute",
+"speed": 5.0
+}, {
+"frames": [ SubResource( 12 ) ],
+"loop": true,
+"name": "sauter",
+"speed": 5.0
+} ]
+
+[sub_resource type="RectangleShape2D" id=14]
+extents = Vector2( 14.5, 17.5 )
+
+[node name="player" type="KinematicBody2D"]
+position = Vector2( 32, -96 )
+collision_mask = 7
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_group_": true
+}
+nage = true
+oxygene = true
+dash = true
+
+[node name="AnimatedSprite" type="AnimatedSprite" parent="."]
+frames = SubResource( 13 )
+animation = "marcher"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2( -0.5, 14.5 )
+shape = SubResource( 14 )
+
+[node name="Camera2D" type="Camera2D" parent="."]
+current = true
+limit_left = -64
+limit_top = -832
+limit_right = 1340
+limit_bottom = 640
+drag_margin_h_enabled = true
+drag_margin_v_enabled = true
+editor_draw_drag_margin = true
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource( 5 )
+
+[node name="dash" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [  ],
+"emitter_path": "../..",
+"trigger": "animation_finished()",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+standalone_trigger = {
+"events": [ {
+"conditions": [  ],
+"emitter_path": "../..",
+"trigger": "dashing(cellposition)",
+"type": "event"
+} ],
+"type": "standalone_trigger"
+}
+graph_position = Vector2( 0.471604, 0.784547 )
+
+[node name="sauter" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "numberofjump==2",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/double saut",
+"type": "connexion"
+}, {
+"events": [ {
+"conditions": [ {
+"condition": "position.y > -32",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+standalone_trigger = {
+"events": [ {
+"conditions": [  ],
+"emitter_path": "../..",
+"trigger": "sauting",
+"type": "event"
+} ],
+"type": "standalone_trigger"
+}
+graph_position = Vector2( 0.476041, 0.0791147 )
+
+[node name="immobile terre" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "abs(vel.x) > 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/marcher",
+"type": "connexion"
+}, {
+"events": [ {
+"conditions": [ {
+"condition": "position.y > -32",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+standalone_trigger = {
+"events": [ {
+"conditions": [ {
+"condition": "is_on_floor()",
+"target_path": NodePath("../.."),
+"type": "condition"
+}, {
+"condition": "vel.x == 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"type": "standalone_trigger"
+}
+graph_position = Vector2( 0.415602, 0.287201 )
+
+[node name="immobile nager" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "abs(vel.x) > 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/nager",
+"type": "connexion"
+} ]
+graph_position = Vector2( 0.224473, 0.523888 )
+
+[node name="parachute" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "not  Input.is_action_pressed(\"ui_accept\")",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/sauter",
+"type": "connexion"
+}, {
+"events": [ {
+"conditions": [ {
+"condition": "position.y > -32",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+standalone_trigger = {
+"events": [ {
+"conditions": [  ],
+"emitter_path": "../..",
+"trigger": "parachuting",
+"type": "event"
+} ],
+"type": "standalone_trigger"
+}
+graph_position = Vector2( 0.659108, 0.155659 )
+
+[node name="nager" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "vel.x == 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+graph_position = Vector2( 0.260983, 0.683349 )
+
+[node name="double saut" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "position.y > -32",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+graph_position = Vector2( 0.139638, 0.138969 )
+
+[node name="marcher" type="Node" parent="StateMachine"]
+script = ExtResource( 3 )
+connexions_array = [ {
+"events": [ {
+"conditions": [ {
+"condition": "vel.x == 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile terre",
+"type": "connexion"
+}, {
+"events": [ {
+"conditions": [ {
+"condition": "position.y > -32",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"to": "StateMachine/immobile nager",
+"type": "connexion"
+} ]
+standalone_trigger = {
+"events": [ {
+"conditions": [ {
+"condition": "abs(vel.x) > 0",
+"target_path": NodePath("../.."),
+"type": "condition"
+}, {
+"condition": "is_on_floor()",
+"target_path": NodePath("../.."),
+"type": "condition"
+} ],
+"emitter_path": "../..",
+"trigger": "process",
+"type": "event"
+} ],
+"type": "standalone_trigger"
+}
+graph_position = Vector2( 0.409857, 0.457268 )
+
+[node name="StateAnimationHandler" type="Node" parent="StateMachine"]
+script = ExtResource( 4 )
+animated_sprite_path = NodePath("../../AnimatedSprite")
+
+[node name="jump" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="jump"]
+stream = ExtResource( 12 )
+volume_db = -25.0
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="jump"]
+stream = ExtResource( 13 )
+volume_db = -25.0
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="jump"]
+stream = ExtResource( 10 )
+volume_db = -25.0
+
+[node name="doublejump" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="doublejump"]
+stream = ExtResource( 11 )
+volume_db = -25.0
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="doublejump"]
+stream = ExtResource( 7 )
+volume_db = -25.0
+
+[node name="dash" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="dash"]
+stream = ExtResource( 6 )
+volume_db = -20.0
+
+[node name="AudioStreamPlayer2" type="AudioStreamPlayer" parent="dash"]
+stream = ExtResource( 8 )
+volume_db = -20.0
+
+[node name="AudioStreamPlayer3" type="AudioStreamPlayer" parent="dash"]
+stream = ExtResource( 9 )
+volume_db = -20.0
+
+[node name="Node" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="Node"]
+stream = ExtResource( 15 )
+volume_db = -30.0
+
+[node name="AudioStreamPlayer2D" type="AudioStreamPlayer2D" parent="Node"]
+stream = ExtResource( 14 )
+volume_db = -30.0
+
+[node name="coin" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 16 )
+volume_db = -10.0

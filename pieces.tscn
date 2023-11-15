@@ -1,0 +1,24 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://tilemap.png" type="Texture" id=1]
+[ext_resource path="res://pieces.gd" type="Script" id=2]
+[ext_resource path="res://sound/coin.wav" type="AudioStream" id=3]
+
+[node name="Sprite" type="Sprite"]
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 320, 0, 64, 64 )
+script = ExtResource( 2 )
+
+[node name="hitbox" type="Area2D" parent="."]
+position = Vector2( -1, -1 )
+collision_layer = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="hitbox"]
+position = Vector2( 1, 0 )
+polygon = PoolVector2Array( 2, 0, 13, 16, 3, 33, -6, 17 )
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource( 3 )
+
+[connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]

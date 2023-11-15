@@ -1,0 +1,72 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://tilemap.png" type="Texture" id=1]
+[ext_resource path="res://pics.gd" type="Script" id=2]
+
+[sub_resource type="Animation" id=1]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 33, 39 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath(".:anim_offset")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 32, -31.7454 ) ]
+}
+
+[sub_resource type="Animation" id=2]
+resource_name = "deplacement"
+length = 2.0
+loop = true
+tracks/0/type = "value"
+tracks/0/path = NodePath(".:anim_offset")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.4, 1, 2 ),
+"transitions": PoolRealArray( 1, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 0, -128 ), Vector2( 0, -128 ), Vector2( 0, 0 ) ]
+}
+
+[node name="Sprite" type="Sprite"]
+position = Vector2( 33, 39 )
+texture = ExtResource( 1 )
+region_enabled = true
+region_rect = Rect2( 256, 0, 64, 64 )
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_group_": true
+}
+anim_offset = Vector2( 32, -31.7454 )
+
+[node name="hitbox" type="Area2D" parent="."]
+position = Vector2( -32, -96 )
+collision_layer = 4
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="hitbox"]
+polygon = PoolVector2Array( 31, 68, 42, 92, 34, 92, 34, 122, 28, 122, 28, 92, 20, 92 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/RESET = SubResource( 1 )
+anims/deplacement = SubResource( 2 )
+
+[connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]
