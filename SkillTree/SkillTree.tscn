@@ -255,7 +255,7 @@ margin_bottom = 40.0
 position = Vector2( -27, 46 )
 scale = Vector2( 2.0625, 1.875 )
 frames = SubResource( 21 )
-frame = 12
+frame = 4
 playing = true
 
 [node name="ThanksCrédits" type="Label" parent="Victory"]
